@@ -1,5 +1,7 @@
 package ru.akirakozov.sd.refactoring.utils;
 
+import ru.akirakozov.sd.refactoring.repository.utils.UpdateOperation;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -17,10 +19,10 @@ public class TestDbUtils {
         );
     }
 
-    public static void executeInTestDb(StatementOperation stmtOperation) {
+    public static void executeInTestDb(UpdateOperation stmtOperation) {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
             Statement stmt = c.createStatement();
-            stmtOperation.execute(stmt);
+            stmtOperation.update(stmt);
             stmt.close();
         } catch (Exception e) {
             System.err.printf(

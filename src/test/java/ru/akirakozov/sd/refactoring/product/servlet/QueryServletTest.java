@@ -1,4 +1,4 @@
-package ru.akirakozov.sd.refactoring.servlet;
+package ru.akirakozov.sd.refactoring.product.servlet;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +56,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new QueryServlet().doGet(request, response);
+        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -77,7 +77,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new QueryServlet().doGet(request, response);
+        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -98,7 +98,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new QueryServlet().doGet(request, response);
+        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -119,7 +119,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new QueryServlet().doGet(request, response);
+        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -142,7 +142,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new QueryServlet().doGet(request, response);
+        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
 
         writer.flush();
         assertThat(

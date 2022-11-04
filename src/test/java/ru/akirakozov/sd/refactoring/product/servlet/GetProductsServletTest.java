@@ -1,4 +1,4 @@
-package ru.akirakozov.sd.refactoring.servlet;
+package ru.akirakozov.sd.refactoring.product.servlet;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -51,7 +51,7 @@ class GetProductsServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new GetProductsServlet().doGet(request, response);
+        new ru.akirakozov.sd.refactoring.product.servlet.GetProductsServlet().doGet(request, response);
 
         assertThat(
             stringWriter.toString(),

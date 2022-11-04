@@ -1,8 +1,9 @@
-package ru.akirakozov.sd.refactoring.servlet;
+package ru.akirakozov.sd.refactoring.product.servlet;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.utils.TestDbUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
@@ -26,20 +30,26 @@ class AddProductServletTest {
 
     private StringWriter stringWriter;
     private PrintWriter writer;
+    private Connection connection;
+    private AddProductServlet servlet;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException {
         TestDbUtils.initTestDb();
         TestDbUtils.executeInTestDb(stmt ->
             stmt.executeUpdate("DELETE FROM PRODUCT;"));
 
         stringWriter = new StringWriter();
         writer = new PrintWriter(stringWriter);
+
+        connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+        servlet = new AddProductServlet(new ProductRepositoryImpl(connection));
     }
 
     @AfterEach
-    void clearWriter() {
+    void clearWriter() throws SQLException {
         writer.close();
+        connection.close();
     }
 
     @Test
@@ -51,7 +61,7 @@ class AddProductServletTest {
         when(request.getParameter(eq("name"))).thenReturn("Varenik");
         when(request.getParameter(eq("price"))).thenReturn("300");
 
-        new AddProductServlet().doGet(request, response);
+        servlet.doGet(request, response);
 
         writer.flush();
 
@@ -76,7 +86,7 @@ class AddProductServletTest {
         when(request.getParameter(eq("price"))).thenReturn(null);
 
         assertThrows(RuntimeException.class, () ->
-            new AddProductServlet().doGet(request, response)
+            servlet.doGet(request, response)
         );
         writer.flush();
 
@@ -97,7 +107,7 @@ class AddProductServletTest {
         when(request.getParameter(eq("name"))).thenReturn(null);
         when(request.getParameter(eq("price"))).thenReturn("350");
 
-        assertDoesNotThrow(() -> new AddProductServlet().doGet(request, response));
+        assertDoesNotThrow(() -> servlet.doGet(request, response));
         writer.flush();
 
         assertThat(stringWriter.toString(), equalTo("OK" + LINE_BREAK));

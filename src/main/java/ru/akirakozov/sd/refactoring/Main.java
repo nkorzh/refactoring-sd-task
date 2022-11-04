@@ -3,9 +3,11 @@ package ru.akirakozov.sd.refactoring;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import ru.akirakozov.sd.refactoring.servlet.AddProductServlet;
-import ru.akirakozov.sd.refactoring.servlet.GetProductsServlet;
-import ru.akirakozov.sd.refactoring.servlet.QueryServlet;
+import ru.akirakozov.sd.refactoring.product.repository.ProductRepository;
+import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
+import ru.akirakozov.sd.refactoring.product.servlet.AddProductServlet;
+import ru.akirakozov.sd.refactoring.product.servlet.GetProductsServlet;
+import ru.akirakozov.sd.refactoring.product.servlet.QueryServlet;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +27,6 @@ public class Main {
 
             stmt.executeUpdate(sql);
             stmt.close();
-        }
 
         Server server = new Server(8080);
 
@@ -33,11 +34,15 @@ public class Main {
         context.setContextPath("/");
         server.setHandler(context);
 
-        context.addServlet(new ServletHolder(new AddProductServlet()), "/add-product");
+        ProductRepository productRepository = new ProductRepositoryImpl(c);
+
+        context.addServlet(new ServletHolder(new AddProductServlet(productRepository)), "/add-product");
         context.addServlet(new ServletHolder(new GetProductsServlet()),"/get-products");
         context.addServlet(new ServletHolder(new QueryServlet()),"/query");
 
         server.start();
         server.join();
+
+        }
     }
 }
