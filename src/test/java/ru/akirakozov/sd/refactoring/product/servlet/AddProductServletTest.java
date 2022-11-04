@@ -25,6 +25,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.LINE_BREAK;
+import static ru.akirakozov.sd.refactoring.utils.TestDbUtils.TEST_DB_URL;
 
 class AddProductServletTest {
 
@@ -42,7 +43,7 @@ class AddProductServletTest {
         stringWriter = new StringWriter();
         writer = new PrintWriter(stringWriter);
 
-        connection = DriverManager.getConnection("jdbc:sqlite:test.db");
+        connection = DriverManager.getConnection(TEST_DB_URL);
         servlet = new AddProductServlet(new ProductRepositoryImpl(connection));
     }
 

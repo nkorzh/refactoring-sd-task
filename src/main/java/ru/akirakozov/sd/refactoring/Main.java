@@ -20,28 +20,28 @@ public class Main {
     public static void main(String[] args) throws Exception {
         try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
             String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " PRICE          INT     NOT NULL)";
+                         "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
+                         " NAME           TEXT    NOT NULL, " +
+                         " PRICE          INT     NOT NULL)";
             Statement stmt = c.createStatement();
 
             stmt.executeUpdate(sql);
             stmt.close();
 
-        Server server = new Server(8080);
+            Server server = new Server(8080);
 
-        ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.setContextPath("/");
-        server.setHandler(context);
+            ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+            context.setContextPath("/");
+            server.setHandler(context);
 
-        ProductRepository productRepository = new ProductRepositoryImpl(c);
+            ProductRepository productRepository = new ProductRepositoryImpl(c);
 
-        context.addServlet(new ServletHolder(new AddProductServlet(productRepository)), "/add-product");
-        context.addServlet(new ServletHolder(new GetProductsServlet()),"/get-products");
-        context.addServlet(new ServletHolder(new QueryServlet()),"/query");
+            context.addServlet(new ServletHolder(new AddProductServlet(productRepository)), "/add-product");
+            context.addServlet(new ServletHolder(new GetProductsServlet(productRepository)), "/get-products");
+            context.addServlet(new ServletHolder(new QueryServlet(productRepository)), "/query");
 
-        server.start();
-        server.join();
+            server.start();
+            server.join();
 
         }
     }

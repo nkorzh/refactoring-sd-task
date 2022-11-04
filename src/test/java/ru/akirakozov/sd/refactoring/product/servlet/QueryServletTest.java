@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
+import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.utils.TestDbUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -13,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -26,14 +30,17 @@ import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_END;
 import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_HEADER;
 import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.LINE_BREAK;
 import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.TAB;
+import static ru.akirakozov.sd.refactoring.utils.TestDbUtils.TEST_DB_URL;
 
 class QueryServletTest {
 
     private StringWriter stringWriter;
     private PrintWriter writer;
+    private Connection connection;
+    private QueryServlet servlet;
 
     @BeforeEach
-    void setUp() {
+    void setUp() throws SQLException {
         TestDbUtils.initTestDb();
         TestDbUtils.executeInTestDb(stmt -> stmt.executeUpdate("DELETE FROM PRODUCT;"));
         TestDbUtils.executeInTestDb(stmt ->
@@ -41,11 +48,15 @@ class QueryServletTest {
 
         stringWriter = new StringWriter();
         writer = new PrintWriter(stringWriter);
+
+        connection = DriverManager.getConnection(TEST_DB_URL);
+        servlet = new QueryServlet(new ProductRepositoryImpl(connection));
     }
 
     @AfterEach
-    void clearWriter() {
+    void clearWriter() throws SQLException {
         writer.close();
+        connection.close();
     }
 
     @Test
@@ -56,7 +67,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
+        servlet.doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -77,7 +88,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
+        servlet.doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -98,7 +109,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
+        servlet.doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -119,7 +130,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
+        servlet.doGet(request, response);
 
         writer.flush();
         assertThat(
@@ -142,7 +153,7 @@ class QueryServletTest {
 
         when(response.getWriter()).thenReturn(writer);
 
-        new ru.akirakozov.sd.refactoring.product.servlet.QueryServlet().doGet(request, response);
+        servlet.doGet(request, response);
 
         writer.flush();
         assertThat(

@@ -11,5 +11,5 @@ public interface ProductRepository extends Repository<Product> {
 
     Long getTotalPrice();
 
-    Long countProducts();
+    Long getProductCount();
 }

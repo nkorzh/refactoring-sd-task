@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 
 public class TestDbUtils {
 
+    public static String TEST_DB_URL = "jdbc:sqlite:test.db";
+
     public static void initTestDb() {
         executeInTestDb(
             stmt -> stmt.executeUpdate("CREATE TABLE IF NOT EXISTS PRODUCT" +
@@ -20,7 +22,7 @@ public class TestDbUtils {
     }
 
     public static void executeInTestDb(UpdateOperation stmtOperation) {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
+        try (Connection c = DriverManager.getConnection(TEST_DB_URL)) {
             Statement stmt = c.createStatement();
             stmtOperation.update(stmt);
             stmt.close();

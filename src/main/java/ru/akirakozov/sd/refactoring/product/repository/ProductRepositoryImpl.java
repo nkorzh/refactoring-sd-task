@@ -20,7 +20,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product getProductWithMaxPrice() {
         return DbUtils.performOperation(connection, stmt -> {
-            ResultSet rs = stmt.executeQuery("SELECT NAME, PRICE FROM PRODUCT ORDER BY PRICE LIMIT 1;");
+            ResultSet rs = stmt.executeQuery("SELECT NAME, PRICE FROM PRODUCT ORDER BY PRICE DESC LIMIT 1;");
             return extractProduct(rs)
                 .orElseThrow(() -> new BusinessException("No products found"));
         });
@@ -29,7 +29,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product getProductWithMinPrice() {
         return DbUtils.performOperation(connection, stmt -> {
-            ResultSet rs = stmt.executeQuery("SELECT NAME, PRICE FROM PRODUCT ORDER BY DSC PRICE LIMIT 1;");
+            ResultSet rs = stmt.executeQuery("SELECT NAME, PRICE FROM PRODUCT ORDER BY PRICE ASC LIMIT 1;");
             return extractProduct(rs)
                 .orElseThrow(() -> new BusinessException("No products found"));
         });
@@ -45,7 +45,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public Long countProducts() {
+    public Long getProductCount() {
         return DbUtils.performOperation(connection, stmt -> {
             ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as count FROM PRODUCT;");
             rs.next();
