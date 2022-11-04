@@ -11,25 +11,24 @@ import ru.akirakozov.sd.refactoring.product.servlet.GetProductsServlet;
 import ru.akirakozov.sd.refactoring.product.servlet.QueryServlet;
 import ru.akirakozov.sd.refactoring.product.web.ProductMapper;
 import ru.akirakozov.sd.refactoring.product.web.ProductMapperImpl;
+import ru.akirakozov.sd.refactoring.repository.utils.DbUtils;
+import ru.akirakozov.sd.refactoring.utils.TextUtils;
 
+import javax.servlet.http.HttpServlet;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.Statement;
 
 /**
  * @author akirakozov
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        try (Connection c = DriverManager.getConnection("jdbc:sqlite:test.db")) {
-            String sql = "CREATE TABLE IF NOT EXISTS PRODUCT" +
-                         "(ID INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL," +
-                         " NAME           TEXT    NOT NULL, " +
-                         " PRICE          INT     NOT NULL)";
-            Statement stmt = c.createStatement();
+        // should be retrieved from Consul with credits from Vault
+        String dbUrl = "jdbc:sqlite:test.db";
 
-            stmt.executeUpdate(sql);
-            stmt.close();
+        try (Connection c = DriverManager.getConnection(dbUrl)) {
+            String initScript = TextUtils.getResourceAsString("sql/init.sql");
+            DbUtils.performOperation(c, stmt -> stmt.executeUpdate(initScript));
 
             Server server = new Server(8080);
 
@@ -40,13 +39,16 @@ public class Main {
             ProductRepository productRepository = new ProductRepositoryImpl(c);
             ProductMapper productMapper = new ProductMapperImpl();
 
-            context.addServlet(new ServletHolder(new AddProductServlet(productRepository, new ProductExtractor())), "/add-product");
-            context.addServlet(new ServletHolder(new GetProductsServlet(productRepository, productMapper)), "/get-products");
-            context.addServlet(new ServletHolder(new QueryServlet(productRepository, productMapper)), "/query");
+            addServlet("/add-product", new AddProductServlet(productRepository, new ProductExtractor()), context);
+            addServlet("/get-products", new GetProductsServlet(productRepository, productMapper), context);
+            addServlet("/query", new QueryServlet(productRepository, productMapper), context);
 
             server.start();
             server.join();
-
         }
+    }
+
+    private static void addServlet(String path, HttpServlet servlet, ServletContextHandler context) {
+        context.addServlet(new ServletHolder(servlet), path);
     }
 }
