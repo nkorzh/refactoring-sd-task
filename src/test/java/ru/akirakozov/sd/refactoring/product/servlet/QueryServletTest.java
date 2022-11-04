@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
+import ru.akirakozov.sd.refactoring.product.web.ProductMapperImpl;
 import ru.akirakozov.sd.refactoring.utils.TestDbUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,13 +24,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HEADER_END;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HEADER_START;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_BREAK;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_END;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_HEADER;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.LINE_BREAK;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.TAB;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HEADER_END;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HEADER_START;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HTML_BREAK;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HTML_END;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HTML_HEADER;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.LINE_BREAK;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.TAB;
 import static ru.akirakozov.sd.refactoring.utils.TestDbUtils.TEST_DB_URL;
 
 class QueryServletTest {
@@ -50,7 +51,7 @@ class QueryServletTest {
         writer = new PrintWriter(stringWriter);
 
         connection = DriverManager.getConnection(TEST_DB_URL);
-        servlet = new QueryServlet(new ProductRepositoryImpl(connection));
+        servlet = new QueryServlet(new ProductRepositoryImpl(connection), new ProductMapperImpl());
     }
 
     @AfterEach

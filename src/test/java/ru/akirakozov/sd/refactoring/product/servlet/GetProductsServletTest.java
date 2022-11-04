@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
+import ru.akirakozov.sd.refactoring.product.web.ProductMapperImpl;
 import ru.akirakozov.sd.refactoring.utils.TestDbUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,11 +20,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_BREAK;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_END;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.HTML_HEADER;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.LINE_BREAK;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.TAB;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HTML_BREAK;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HTML_END;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.HTML_HEADER;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.LINE_BREAK;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.TAB;
 import static ru.akirakozov.sd.refactoring.utils.TestDbUtils.TEST_DB_URL;
 
 class GetProductsServletTest {
@@ -32,6 +33,7 @@ class GetProductsServletTest {
     private PrintWriter writer;
     private Connection connection;
     private GetProductsServlet servlet;
+
 
     @BeforeEach
     void setUp() throws SQLException {
@@ -43,7 +45,7 @@ class GetProductsServletTest {
         writer = new PrintWriter(stringWriter);
 
         connection = DriverManager.getConnection(TEST_DB_URL);
-        servlet = new GetProductsServlet(new ProductRepositoryImpl(connection));
+        servlet = new GetProductsServlet(new ProductRepositoryImpl(connection), new ProductMapperImpl());
     }
 
     @AfterEach

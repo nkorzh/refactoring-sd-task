@@ -1,6 +1,7 @@
-package ru.akirakozov.sd.refactoring.utils;
+package ru.akirakozov.sd.refactoring.product.web;
 
 public class HtmlUtils {
+    public static String HTML_CONTENT_TYPE = "text/html";
     public static String HTML_HEADER = "<html><body>";
     public static String HTML_END = "</body></html>";
     public static String HTML_BREAK = "</br>";

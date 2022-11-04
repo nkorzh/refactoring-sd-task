@@ -3,11 +3,14 @@ package ru.akirakozov.sd.refactoring;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import ru.akirakozov.sd.refactoring.product.converters.ProductExtractor;
 import ru.akirakozov.sd.refactoring.product.repository.ProductRepository;
 import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.product.servlet.AddProductServlet;
 import ru.akirakozov.sd.refactoring.product.servlet.GetProductsServlet;
 import ru.akirakozov.sd.refactoring.product.servlet.QueryServlet;
+import ru.akirakozov.sd.refactoring.product.web.ProductMapper;
+import ru.akirakozov.sd.refactoring.product.web.ProductMapperImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -35,10 +38,11 @@ public class Main {
             server.setHandler(context);
 
             ProductRepository productRepository = new ProductRepositoryImpl(c);
+            ProductMapper productMapper = new ProductMapperImpl();
 
-            context.addServlet(new ServletHolder(new AddProductServlet(productRepository)), "/add-product");
-            context.addServlet(new ServletHolder(new GetProductsServlet(productRepository)), "/get-products");
-            context.addServlet(new ServletHolder(new QueryServlet(productRepository)), "/query");
+            context.addServlet(new ServletHolder(new AddProductServlet(productRepository, new ProductExtractor())), "/add-product");
+            context.addServlet(new ServletHolder(new GetProductsServlet(productRepository, productMapper)), "/get-products");
+            context.addServlet(new ServletHolder(new QueryServlet(productRepository, productMapper)), "/query");
 
             server.start();
             server.join();

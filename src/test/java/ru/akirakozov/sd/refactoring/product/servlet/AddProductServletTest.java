@@ -3,6 +3,7 @@ package ru.akirakozov.sd.refactoring.product.servlet;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.akirakozov.sd.refactoring.product.converters.ProductExtractor;
 import ru.akirakozov.sd.refactoring.product.repository.ProductRepositoryImpl;
 import ru.akirakozov.sd.refactoring.utils.TestDbUtils;
 
@@ -24,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static ru.akirakozov.sd.refactoring.utils.HtmlUtils.LINE_BREAK;
+import static ru.akirakozov.sd.refactoring.product.web.HtmlUtils.LINE_BREAK;
 import static ru.akirakozov.sd.refactoring.utils.TestDbUtils.TEST_DB_URL;
 
 class AddProductServletTest {
@@ -44,7 +45,7 @@ class AddProductServletTest {
         writer = new PrintWriter(stringWriter);
 
         connection = DriverManager.getConnection(TEST_DB_URL);
-        servlet = new AddProductServlet(new ProductRepositoryImpl(connection));
+        servlet = new AddProductServlet(new ProductRepositoryImpl(connection), new ProductExtractor());
     }
 
     @AfterEach
