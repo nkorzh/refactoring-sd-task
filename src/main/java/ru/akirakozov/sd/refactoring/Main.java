@@ -28,7 +28,7 @@ public class Main {
 
         try (Connection c = DriverManager.getConnection(dbUrl)) {
             String initScript = TextUtils.getResourceAsString("sql/init.sql");
-            DbUtils.performOperation(c, stmt -> stmt.executeUpdate(initScript));
+            DbUtils.query(c, initScript);
 
             Server server = new Server(8080);
 

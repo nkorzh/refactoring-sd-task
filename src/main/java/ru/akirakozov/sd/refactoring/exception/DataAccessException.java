@@ -4,4 +4,8 @@ public class DataAccessException extends RuntimeException {
     public DataAccessException(Exception nested) {
         super(nested);
     }
+
+    public DataAccessException(String message) {
+        super(message);
+    }
 }
